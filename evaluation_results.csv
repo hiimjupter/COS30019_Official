@@ -1,0 +1,7 @@
+Algorithm,Goal,Solution Steps,Duration,Memory
+Breadth First Search,(8, 6),79,0.00045,63
+Depth First Search,(1, 0),103,9e-05,34
+Custom 1,(8, 6),79,0.00142,130
+Greedy Best-first Search,(8, 6),79,0.00044,62
+A* Search,(8, 6),79,0.00027,63
+Custom 2,(8, 6),79,0.00054,34
