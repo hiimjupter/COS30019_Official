@@ -227,6 +227,7 @@ def main():
                             results.append(
                                 [get_algorithm_name(algo), goals_found, len(path_outputs) if path_outputs != 'No path found.' else 0, duration])
                         with open('evaluation_results.csv', 'w') as f:
+                            f.write(f'Maze: {MAZE}\n')
                             f.write(
                                 'Algorithm,Goals Found,Solution Steps,Duration\n')
                             for result in results:
@@ -242,6 +243,7 @@ def main():
                 search, algorithm)
             if path_outputs == "No path found.":
                 print('--------Results---------')
+                print(f'Maze: {MAZE}')
                 print(f'Algorithm: {algorithm}')
                 print(f'Goals Found: {0}')
                 print(f'Path: {path_outputs}')
@@ -255,6 +257,7 @@ def main():
                     screen, grid, expanded_nodes, paths, algorithm, goal_states)
 
                 print('--------Results---------')
+                print(f'Maze: {MAZE}')
                 print(f'Algorithm: {algorithm}')
                 print(f'Goals Found: {goal_found}')
                 print(f'Path: {path_outputs}')

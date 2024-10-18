@@ -1,7 +1,8 @@
+Maze: maps/test.txt
 Algorithm,Goals Found,Solution Steps,Duration
-Breadth First Search,{(7, 4), (11, 11)},485,0.00056
-Depth First Search,{(7, 4), (11, 11)},485,0.00022
-Custom 1,{(7, 4), (11, 11)},485,0.00497
-Greedy Best-first Search,{(7, 4), (11, 11)},485,0.00052
-A* Search,{(7, 4), (11, 11)},485,0.00035
-Custom 2,{(7, 4), (11, 11)},485,0.0035
+Breadth First Search,{(7, 0), (10, 3)},143,0.00035
+Depth First Search,{(7, 0), (10, 3)},283,0.00011
+Custom 1,{(7, 0), (10, 3)},143,0.00321
+Greedy Best-first Search,{(7, 0), (10, 3)},143,0.00029
+A* Search,{(7, 0), (10, 3)},143,0.00017
+Custom 2,{(7, 0), (10, 3)},143,0.00022
