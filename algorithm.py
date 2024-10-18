@@ -323,7 +323,6 @@ class Search:
     def iterative_deepening_a_star(self):
         self.visited.clear()
         self.expanded_movement.clear()
-
         def ida_star_recursive(node, path, g_cost, threshold, found_goals):
             f_cost = g_cost + min(self.heuristic(node, goal)
                                   for goal in self.grid.goal_states if goal not in found_goals)
@@ -352,7 +351,6 @@ class Search:
                     min_threshold = min(min_threshold, temp_threshold)
             self.visited.remove(node)
             return min_threshold, None
-
         start = self.grid.initial_state
         threshold = min(self.heuristic(start, goal)
                         for goal in self.grid.goal_states)
@@ -364,7 +362,6 @@ class Search:
                 return "Goal is already at the initial state"
             else:
                 continue
-
         while len(found_goals) < len(self.grid.goal_states):
             self.visited.clear()
             self.expanded_movement.clear()

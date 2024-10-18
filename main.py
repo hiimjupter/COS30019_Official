@@ -135,7 +135,7 @@ def main():
                         MAZE = 'maps/test10.txt'
                         choosing_maze = False
                     elif Test_button.is_clicked(mouse_pos):
-                        MAZE = 'maps/test10.txt'
+                        MAZE = 'maps/test.txt'
                         choosing_maze = False
                     elif Quit_button.is_clicked(mouse_pos):
                         running = False
