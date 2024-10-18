@@ -36,12 +36,11 @@ def execute_search(search, algorithm):
         path_output = ', '.join(path)
 
     expanded_nodes = search.get_expanded_movement()
-    num_expanded_nodes = len(expanded_nodes)
 
-    return path, path_output, duration, expanded_nodes, num_expanded_nodes
+    return path, path_output, duration, expanded_nodes
 
 
-def navigate_path(screen, grid, num_expanded_nodes, expanded_nodes, path, algorithm, goal_states):
+def navigate_path(screen, grid, expanded_nodes, path, algorithm, goal_states):
     path_drawn = False
     goal_found = set()
     running = True
@@ -216,14 +215,15 @@ def main():
                                       'gbfs', 'a_star', 'cus_2']
                         results = []
                         for algo in algorithms:
-                            path, path_output, duration, expanded_nodes, num_expanded_nodes = execute_search(
+                            path, path_output, duration, expanded_nodes = execute_search(
                                 search, algo)
                             goal_found = get_goal(grid, path)
                             results.append(
-                                [get_algorithm_name(algo), goal_found, len(path_output), duration, num_expanded_nodes])
+                                [get_algorithm_name(algo), goal_found, len(path_output) if path_output != 'No path found.' else 0, duration])
                         with open('evaluation_results.csv', 'w') as f:
+                            f.write(f'Maze: {MAZE}\n')
                             f.write(
-                                'Algorithm,Goal,Solution Steps,Duration,Memory\n')
+                                'Algorithm,Goal,Solution Steps,Duration\n')
                             for result in results:
                                 f.write(','.join(map(str, result)) + '\n')
                         print('Evaluation results saved to evaluation_results.csv')
@@ -233,20 +233,29 @@ def main():
                         choosing_maze = True
 
         if algorithm:
-            path, path_output, duration, expanded_nodes, num_expanded_nodes = execute_search(
+            path, path_output, duration, expanded_nodes = execute_search(
                 search, algorithm)
-            DISPLAY_WIDTH, DISPLAY_HEIGHT = columns * CELL_SIZE, rows * CELL_SIZE
-            screen = pygame.display.set_mode(
-                (DISPLAY_WIDTH, DISPLAY_HEIGHT))
-            algorithm, goal_found = navigate_path(screen, grid, num_expanded_nodes, expanded_nodes, path,
-                                                  algorithm, goal_states)
+            if path_output == "No Path Found":
+                print('--------Results---------')
+                print(f'Maze: {MAZE}')
+                print(f'Algorithm: {algorithm}')
+                print(f'Goals Found: {0}')
+                print(f'Path: {path_output}')
+                print(f'Duration: {duration} seconds')
+                continue
+            else:
+                DISPLAY_WIDTH, DISPLAY_HEIGHT = columns * CELL_SIZE, rows * CELL_SIZE
+                screen = pygame.display.set_mode(
+                    (DISPLAY_WIDTH, DISPLAY_HEIGHT))
+                algorithm, goal_found = navigate_path(screen, grid, expanded_nodes, path,
+                                                      algorithm, goal_states)
 
-            print('--------Results---------')
-            print(f'Algorithm: {algorithm}')
-            print(f'Goals Found: {goal_found}')
-            print(f'Path: {path_output}')
-            print(f'Duration: {duration} seconds')
-            print(f'Memory: {num_expanded_nodes} nodes')
+                print('--------Results---------')
+                print(f'Maze: {MAZE}')
+                print(f'Algorithm: {algorithm}')
+                print(f'Goals Found: {goal_found}')
+                print(f'Path: {path_output}')
+                print(f'Duration: {duration} seconds')
 
     pygame.quit()
 
