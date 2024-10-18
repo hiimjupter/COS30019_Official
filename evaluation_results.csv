@@ -1,8 +1,8 @@
-Maze: maps/test.txt
-Algorithm,Goals Found,Solution Steps,Duration
-Breadth First Search,{(7, 0), (10, 3)},143,0.00035
-Depth First Search,{(7, 0), (10, 3)},283,0.00011
-Custom 1,{(7, 0), (10, 3)},143,0.00321
-Greedy Best-first Search,{(7, 0), (10, 3)},143,0.00029
-A* Search,{(7, 0), (10, 3)},143,0.00017
-Custom 2,{(7, 0), (10, 3)},143,0.00022
+Maze: maps/maze2.txt
+Algorithm,Goals Found,Solution Steps,Duration,Expanded Nodes Size (KB)
+Breadth First Search,{(5, 9), (3, 5)},528,0.00084,1.29688
+Depth First Search,{(5, 9), (3, 5)},574,0.00035,0.9375
+Custom 1,{(5, 9), (3, 5)},528,2.37299,436.70312
+Greedy Best-first Search,{(5, 9), (3, 5)},528,0.00106,1.29688
+A* Search,{(5, 9), (3, 5)},528,0.0006,1.29688
+Custom 2,{(5, 9), (3, 5)},528,0.50999,133.57812

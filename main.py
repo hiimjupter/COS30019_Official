@@ -224,12 +224,15 @@ def main():
                             paths, path_outputs, duration, expanded_nodes = execute_search(
                                 search, algo)
                             goals_found = get_goals(grid, paths)
+                            # Calculate disk space used by expanded nodes in KB
+                            expanded_nodes_size = sum(
+                                len(node) for node in expanded_nodes) * 8 / 1024
                             results.append(
-                                [get_algorithm_name(algo), goals_found, len(path_outputs) if path_outputs != 'No path found.' else 0, duration])
+                                [get_algorithm_name(algo), goals_found, len(path_outputs) if path_outputs != 'No path found.' else 0, duration, round(expanded_nodes_size, 5)])
                         with open('evaluation_results.csv', 'w') as f:
                             f.write(f'Maze: {MAZE}\n')
                             f.write(
-                                'Algorithm,Goals Found,Solution Steps,Duration\n')
+                                'Algorithm,Goals Found,Solution Steps,Duration,Expanded Nodes Size (MB)\n')
                             for result in results:
                                 f.write(','.join(map(str, result)) + '\n')
                         print('Evaluation results saved to evaluation_results.csv')
