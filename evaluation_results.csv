@@ -1,7 +1,7 @@
-Algorithm,Goal,Solution Steps,Duration
-Breadth First Search,(11, 11),181,0.00044
-Depth First Search,(7, 4),302,0.00018
-Custom 1,(11, 11),181,0.00172
-Greedy Best-first Search,(11, 11),181,0.00037
-A* Search,(11, 11),181,0.00026
-Custom 2,(11, 11),181,0.00131
+Algorithm,Goals Found,Solution Steps,Duration
+Breadth First Search,{(7, 4), (11, 11)},485,0.00056
+Depth First Search,{(7, 4), (11, 11)},485,0.00022
+Custom 1,{(7, 4), (11, 11)},485,0.00497
+Greedy Best-first Search,{(7, 4), (11, 11)},485,0.00052
+A* Search,{(7, 4), (11, 11)},485,0.00035
+Custom 2,{(7, 4), (11, 11)},485,0.0035

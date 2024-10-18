@@ -165,10 +165,10 @@ def main():
                                        (SCREEN_HEIGHT // 2), BUTTON_WIDTH, BUTTON_HEIGHT), "CUS_2")
 
         Evaluate_button = Button(screen, (((SCREEN_WIDTH // 2) - BUTTON_WIDTH // 2),
-                                          (SCREEN_HEIGHT // 2) + BUTTON_HEIGHT * 4, BUTTON_WIDTH, BUTTON_HEIGHT), "Evaluate")
+                                          (SCREEN_HEIGHT // 2) + BUTTON_HEIGHT * 2, BUTTON_WIDTH, BUTTON_HEIGHT), "Evaluate")
 
         Return_button = Button(screen, (((SCREEN_WIDTH // 2) - BUTTON_WIDTH // 2),
-                                        (SCREEN_HEIGHT // 2) + BUTTON_HEIGHT * 2, BUTTON_WIDTH, BUTTON_HEIGHT), "Return")
+                                        (SCREEN_HEIGHT // 2) + BUTTON_HEIGHT * 4, BUTTON_WIDTH, BUTTON_HEIGHT), "Return")
 
         screen.fill(COLORS['BLUE'])
         render_title(screen)
@@ -215,14 +215,14 @@ def main():
                                       'gbfs', 'a_star', 'cus_2']
                         results = []
                         for algo in algorithms:
-                            path, path_output, duration, expanded_nodes = execute_search(
+                            paths, path_outputs, duration, expanded_nodes = execute_search(
                                 search, algo)
-                            goal_found = get_goal(grid, path)
+                            goals_found = get_goals(grid, paths)
                             results.append(
-                                [get_algorithm_name(algo), goal_found, len(path_output), duration])
+                                [get_algorithm_name(algo), goals_found, len(path_outputs) if path_outputs != 'No path found.' else 0, duration])
                         with open('evaluation_results.csv', 'w') as f:
                             f.write(
-                                'Algorithm,Goal,Solution Steps,Duration\n')
+                                'Algorithm,Goals Found,Solution Steps,Duration\n')
                             for result in results:
                                 f.write(','.join(map(str, result)) + '\n')
                         print('Evaluation results saved to evaluation_results.csv')
@@ -234,17 +234,25 @@ def main():
         if algorithm:
             paths, path_outputs, duration, expanded_nodes = execute_search(
                 search, algorithm)
-            DISPLAY_WIDTH, DISPLAY_HEIGHT = columns * CELL_SIZE, rows * CELL_SIZE
-            screen = pygame.display.set_mode(
-                (DISPLAY_WIDTH, DISPLAY_HEIGHT))
-            algorithm, goal_found = navigate_path(
-                screen, grid, expanded_nodes, paths, algorithm, goal_states)
+            if path_outputs == "No path found.":
+                print('--------Results---------')
+                print(f'Algorithm: {algorithm}')
+                print(f'Goals Found: {0}')
+                print(f'Path: {path_outputs}')
+                print(f'Duration: {duration} seconds')
+                continue
+            else:
+                DISPLAY_WIDTH, DISPLAY_HEIGHT = columns * CELL_SIZE, rows * CELL_SIZE
+                screen = pygame.display.set_mode(
+                    (DISPLAY_WIDTH, DISPLAY_HEIGHT))
+                algorithm, goal_found = navigate_path(
+                    screen, grid, expanded_nodes, paths, algorithm, goal_states)
 
-            print('--------Results---------')
-            print(f'Algorithm: {algorithm}')
-            print(f'Goals Found: {goal_found}')
-            print(f'Path: {path_outputs}')
-            print(f'Duration: {duration} seconds')
+                print('--------Results---------')
+                print(f'Algorithm: {algorithm}')
+                print(f'Goals Found: {goal_found}')
+                print(f'Path: {path_outputs}')
+                print(f'Duration: {duration} seconds')
 
     pygame.quit()
 

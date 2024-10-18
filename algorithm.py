@@ -244,10 +244,10 @@ class Search:
         self.visited.clear()
         self.expanded_movement.clear()
 
-        def dls(position, path, depth):
-            if depth == 0 and position in self.grid.goal_states:
-                self.path = path
-                return True
+        def dls(position, path, depth, found_goals):
+            if depth == 0 and position in self.grid.goal_states and position not in found_goals:
+                found_goals.add(position)
+                return True, path
             if depth > 0:
                 self.visited.add(position)
                 self.expanded_movement.append(position)
@@ -262,35 +262,45 @@ class Search:
                             (0, 1): 'right'
                         }
                         move_direction = direction_map[direction]
-                        if dls(neighbor, path + [move_direction], depth - 1):
-                            return True
+                        found, result_path = dls(
+                            neighbor, path + [move_direction], depth - 1, found_goals)
+                        if found:
+                            return True, result_path
                 self.visited.remove(position)
-            return False
+            return False, []
 
         start = self.grid.initial_state
         depth = 0
-        while True:
+        found_goals = set()
+        paths_to_goals = []
+
+        while len(found_goals) < len(self.grid.goal_states):
             self.visited.clear()
             self.expanded_movement.clear()
-            if dls(start, [], depth):
-                return '; '.join(self.path) + ';'
+            found, path = dls(start, [], depth, found_goals)
+            if found:
+                paths_to_goals.append(path)
             depth += 1
             if depth > self.grid.rows * self.grid.columns:
                 break
 
-        return "No path found."
+        if len(found_goals) == len(self.grid.goal_states):
+            self.path = paths_to_goals
+            return paths_to_goals
+        else:
+            return "No path found."
 
     def iterative_deepening_a_star(self):
         self.visited.clear()
         self.expanded_movement.clear()
 
-        def ida_star_recursive(node, path, g_cost, threshold):
+        def ida_star_recursive(node, path, g_cost, threshold, found_goals):
             f_cost = g_cost + min(self.heuristic(node, goal)
-                                  for goal in self.grid.goal_states)
+                                  for goal in self.grid.goal_states if goal not in found_goals)
             if f_cost > threshold:
                 return f_cost, None
-            if node in self.grid.goal_states:
-                self.path = path
+            if node in self.grid.goal_states and node not in found_goals:
+                found_goals.add(node)
                 return f_cost, path
             min_threshold = float('inf')
             self.visited.add(node)
@@ -306,7 +316,7 @@ class Search:
                     }
                     move_direction = direction_map[direction]
                     temp_threshold, result_path = ida_star_recursive(
-                        neighbor, path + [move_direction], g_cost + 1, threshold)
+                        neighbor, path + [move_direction], g_cost + 1, threshold, found_goals)
                     if result_path is not None:
                         return temp_threshold, result_path
                     min_threshold = min(min_threshold, temp_threshold)
@@ -316,18 +326,25 @@ class Search:
         start = self.grid.initial_state
         threshold = min(self.heuristic(start, goal)
                         for goal in self.grid.goal_states)
-        while True:
+        found_goals = set()
+        paths_to_goals = []
+
+        while len(found_goals) < len(self.grid.goal_states):
             self.visited.clear()
             self.expanded_movement.clear()
             temp_threshold, result_path = ida_star_recursive(
-                start, [], 0, threshold)
+                start, [], 0, threshold, found_goals)
             if result_path is not None:
-                return '; '.join(result_path) + ';'
+                paths_to_goals.append(result_path)
             if temp_threshold == float('inf'):
                 break
             threshold = temp_threshold
 
-        return "No path found."
+        if len(found_goals) == len(self.grid.goal_states):
+            self.path = paths_to_goals
+            return paths_to_goals
+        else:
+            return "No path found."
 
     def search(self, algorithm='bfs'):
         if algorithm == 'bfs':
