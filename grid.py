@@ -43,9 +43,8 @@ class Grid:
 
         return rects
 
-    def draw_path(self, screen, path, expanded_nodes, delay=EXPANDED_DELAY, nodes_per_iteration=1):
+    def draw_paths(self, screen, paths, expanded_nodes, delay=EXPANDED_DELAY, nodes_per_iteration=1):
         rects = self.reset(screen)
-
         pygame.display.update(rects)
 
         visited_nodes = set()
@@ -78,24 +77,38 @@ class Grid:
                 pygame.display.update(updated_rects)
                 pygame.time.delay(delay)
 
-        # Delay before drawing the path (solution)
+        # Delay before drawing the paths (solutions)
         pygame.time.delay(SCREEN_DELAY)
 
         # Reset
         rects = self.reset(screen)
         pygame.display.update(rects)
 
-        # Start Drawing Path
-        current_position = self.initial_state
+        # Start Drawing Paths
+        previous_path = []
+        for path in paths:
+            current_position = self.initial_state
 
-        # Direction to records
-        for direction in path:
-            move = get_move_from_direction(direction)
-            if move:
-                current_position = (
-                    current_position[0] + move[0], current_position[1] + move[1])
-                rect = pygame.Rect(
-                    current_position[1] * self.cell_size, current_position[0] * self.cell_size, self.cell_size, self.cell_size)
-                pygame.draw.rect(screen, COLORS['BLUE'], rect)
-                pygame.display.update([rect])
-                pygame.time.delay(delay)
+            # Find the divergence point
+            for i, direction in enumerate(path):
+                if i < len(previous_path) and direction == previous_path[i]:
+                    move = get_move_from_direction(direction)
+                    if move:
+                        current_position = (
+                            current_position[0] + move[0], current_position[1] + move[1])
+                else:
+                    break
+
+            # Draw the remaining path from the divergence point
+            for direction in path[i:]:
+                move = get_move_from_direction(direction)
+                if move:
+                    current_position = (
+                        current_position[0] + move[0], current_position[1] + move[1])
+                    rect = pygame.Rect(
+                        current_position[1] * self.cell_size, current_position[0] * self.cell_size, self.cell_size, self.cell_size)
+                    pygame.draw.rect(screen, COLORS['BLUE'], rect)
+                    pygame.display.update([rect])
+                    pygame.time.delay(delay)
+
+            previous_path = path

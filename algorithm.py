@@ -75,8 +75,10 @@ class Search:
         start = self.grid.initial_state
         queue = Queue()
         queue.put((start, []))
+        found_goals = set()
+        paths_to_goals = []
 
-        while not queue.empty():
+        while not queue.empty() and len(found_goals) < len(self.grid.goal_states):
             position, path = queue.get()
 
             if position in self.visited:
@@ -85,9 +87,9 @@ class Search:
             self.visited.add(position)
             self.expanded_movement.append(position)
 
-            if position in self.grid.goal_states:
-                self.path = path
-                return '; '.join(path) + ';'
+            if position in self.grid.goal_states and position not in found_goals:
+                found_goals.add(position)
+                paths_to_goals.append(path)
 
             for neighbor in self.get_neighbors(position):
                 direction = (neighbor[0] - position[0],
@@ -101,15 +103,21 @@ class Search:
                 move_direction = direction_map[direction]
                 queue.put((neighbor, path + [move_direction]))
 
-        return "No path found."
+        if len(found_goals) == len(self.grid.goal_states):
+            self.path = paths_to_goals
+            return paths_to_goals
+        else:
+            return "No path found."
 
     def dfs(self):
         self.visited.clear()
         self.expanded_movement.clear()
         start = self.grid.initial_state
         stack = [(start, [])]
+        found_goals = set()
+        paths_to_goals = []
 
-        while stack:
+        while stack and len(found_goals) < len(self.grid.goal_states):
             position, path = stack.pop()
 
             if position in self.visited:
@@ -118,9 +126,9 @@ class Search:
             self.visited.add(position)
             self.expanded_movement.append(position)
 
-            if position in self.grid.goal_states:
-                self.path = path
-                return '; '.join(path) + ';'
+            if position in self.grid.goal_states and position not in found_goals:
+                found_goals.add(position)
+                paths_to_goals.append(path)
 
             for neighbor in reversed(self.get_neighbors(position)):
                 direction = (neighbor[0] - position[0],
@@ -134,7 +142,11 @@ class Search:
                 move_direction = direction_map[direction]
                 stack.append((neighbor, path + [move_direction]))
 
-        return "No path found."
+        if len(found_goals) == len(self.grid.goal_states):
+            self.path = paths_to_goals
+            return paths_to_goals
+        else:
+            return "No path found."
 
     def gbfs(self):
         self.visited.clear()
@@ -143,8 +155,10 @@ class Search:
         goals = self.grid.goal_states
         queue = Queue()
         queue.put((start, []))
+        found_goals = set()
+        paths_to_goals = []
 
-        while not queue.empty():
+        while not queue.empty() and len(found_goals) < len(goals):
             position, path = queue.get()
 
             if position in self.visited:
@@ -153,9 +167,9 @@ class Search:
             self.visited.add(position)
             self.expanded_movement.append(position)
 
-            if position in goals:
-                self.path = path
-                return '; '.join(path) + ';'
+            if position in goals and position not in found_goals:
+                found_goals.add(position)
+                paths_to_goals.append(path)
 
             neighbors = self.get_neighbors(position)
             neighbors.sort(key=lambda neighbor: min(
@@ -172,7 +186,11 @@ class Search:
                 move_direction = direction_map[direction]
                 queue.put((neighbor, path + [move_direction]))
 
-        return "No path found."
+        if len(found_goals) == len(goals):
+            self.path = paths_to_goals
+            return paths_to_goals
+        else:
+            return "No path found."
 
     def a_star(self):
         self.visited.clear()
@@ -183,8 +201,10 @@ class Search:
         open_set.put((start, []))
         g_costs = {start: 0}
         f_costs = {start: min(self.heuristic(start, goal) for goal in goals)}
+        found_goals = set()
+        paths_to_goals = []
 
-        while not open_set.empty():
+        while not open_set.empty() and len(found_goals) < len(goals):
             current, path = open_set.get()
 
             if current in self.visited:
@@ -193,9 +213,9 @@ class Search:
             self.visited.add(current)
             self.expanded_movement.append(current)
 
-            if current in goals:
-                self.path = path
-                return '; '.join(path) + ';'
+            if current in goals and current not in found_goals:
+                found_goals.add(current)
+                paths_to_goals.append(path)
 
             for neighbor in self.get_neighbors(current):
                 tentative_g_cost = g_costs[current] + 1
@@ -214,7 +234,11 @@ class Search:
                     move_direction = direction_map[direction]
                     open_set.put((neighbor, path + [move_direction]))
 
-        return "No path found."
+        if len(found_goals) == len(goals):
+            self.path = paths_to_goals
+            return paths_to_goals
+        else:
+            return "No path found."
 
     def ids(self):
         self.visited.clear()

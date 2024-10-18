@@ -24,25 +24,28 @@ def render_title(screen):
 
 def execute_search(search, algorithm):
     start_time = time.time()
+
     result = search.search(algorithm=algorithm)
+
     end_time = time.time()
 
     duration = round(end_time - start_time, 5)
-    path = result.strip(";").split("; ")
 
-    if not path or all(x.isspace() for x in path):
-        path_output = "No Path Found"
+    if isinstance(result, str) and result == "No path found.":
+        path_outputs = result
+        paths = []
     else:
-        path_output = ', '.join(path)
+        path_outputs = '; '.join([', '.join(p) for p in result])
+        paths = result
 
     expanded_nodes = search.get_expanded_movement()
 
-    return path, path_output, duration, expanded_nodes
+    return paths, path_outputs, duration, expanded_nodes
 
 
-def navigate_path(screen, grid, expanded_nodes, path, algorithm, goal_states):
+def navigate_path(screen, grid, expanded_nodes, paths, algorithm, goal_states):
     path_drawn = False
-    goal_found = set()
+    goals_found = set()
     running = True
 
     while running:
@@ -53,28 +56,31 @@ def navigate_path(screen, grid, expanded_nodes, path, algorithm, goal_states):
         screen.fill(COLORS['WHITE'])
 
         if not path_drawn:
-            grid.draw_path(screen, path, expanded_nodes)
-            path_drawn = True
+            grid.draw_paths(screen, paths, expanded_nodes)
             pygame.time.delay(SCREEN_DELAY)
 
-            goal_found = get_goal(grid, path)
-            if goal_found:
+            path_drawn = True
+            goals_found = get_goals(grid, paths)
+            if goals_found:
                 running = False
 
         pygame.display.flip()
 
-    return get_algorithm_name(algorithm), goal_found
+    return get_algorithm_name(algorithm), goals_found
 
 
-def get_goal(grid, path):
-    current_position = grid.initial_state
-    for direction in path:
-        move = get_move_from_direction(direction)
-        if move:
-            current_position = (
-                current_position[0] + move[0], current_position[1] + move[1])
-    if current_position in grid.goal_states:
-        return (current_position[1], current_position[0])
+def get_goals(grid, paths):
+    goals_found = set()
+    for path in paths:
+        current_position = grid.initial_state
+        for direction in path:
+            move = get_move_from_direction(direction)
+            if move:
+                current_position = (
+                    current_position[0] + move[0], current_position[1] + move[1])
+            if current_position in grid.goal_states:
+                goals_found.add((current_position[1], current_position[0]))
+    return goals_found
 
 
 def main():
@@ -226,18 +232,18 @@ def main():
                         choosing_maze = True
 
         if algorithm:
-            path, path_output, duration, expanded_nodes = execute_search(
+            paths, path_outputs, duration, expanded_nodes = execute_search(
                 search, algorithm)
             DISPLAY_WIDTH, DISPLAY_HEIGHT = columns * CELL_SIZE, rows * CELL_SIZE
             screen = pygame.display.set_mode(
                 (DISPLAY_WIDTH, DISPLAY_HEIGHT))
             algorithm, goal_found = navigate_path(
-                screen, grid, expanded_nodes, path, algorithm, goal_states)
+                screen, grid, expanded_nodes, paths, algorithm, goal_states)
 
             print('--------Results---------')
             print(f'Algorithm: {algorithm}')
             print(f'Goals Found: {goal_found}')
-            print(f'Path: {path_output}')
+            print(f'Path: {path_outputs}')
             print(f'Duration: {duration} seconds')
 
     pygame.quit()
