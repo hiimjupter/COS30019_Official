@@ -8,7 +8,7 @@ class Search:
         self.visited = set()  # With repeated check
         self.expanded_movement = []
         self.path = []
-        self.heuristic_name = "Manhattan"
+        self.heuristic_name = "Euclidean"
 
     def get_visited_nodes(self):
         return self.visited

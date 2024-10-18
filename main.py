@@ -126,16 +126,16 @@ def main():
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = pygame.mouse.get_pos()
                     if Maze1_button.is_clicked(mouse_pos):
-                        MAZE = 'maps/maze1.txt'
+                        MAZE = 'maps/test4.txt'
                         choosing_maze = False
                     elif Maze2_button.is_clicked(mouse_pos):
-                        MAZE = 'maps/maze2.txt'
+                        MAZE = 'maps/test5.txt'
                         choosing_maze = False
                     elif Maze3_button.is_clicked(mouse_pos):
-                        MAZE = 'maps/maze3.txt'
+                        MAZE = 'maps/test10.txt'
                         choosing_maze = False
                     elif Test_button.is_clicked(mouse_pos):
-                        MAZE = 'maps/test3.txt'
+                        MAZE = 'maps/test10.txt'
                         choosing_maze = False
                     elif Quit_button.is_clicked(mouse_pos):
                         running = False
