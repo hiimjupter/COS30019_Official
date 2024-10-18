@@ -1,8 +1,8 @@
 Maze: maps/test.txt
-Algorithm,Goal,Solution Steps,Duration
-Breadth First Search,(7, 0),61,0.0003
-Depth First Search,(7, 0),111,7e-05
-Custom 1,(7, 0),61,0.00102
-Greedy Best-first Search,(7, 0),61,0.00026
-A* Search,(7, 0),61,0.00015
-Custom 2,(7, 0),61,0.00101
+Algorithm,Goals Found,Solution Steps,Duration,Expanded Nodes Size (KB)
+Breadth First Search,(7, 0),61,0.00031,0.51562
+Depth First Search,(7, 0),111,7e-05,0.40625
+Custom 1,(7, 0),61,0.00105,1.78125
+Greedy Best-first Search,(7, 0),61,0.00024,0.48438
+A* Search,(7, 0),61,0.00015,0.51562
+Custom 2,(7, 0),61,7e-05,0.23438
