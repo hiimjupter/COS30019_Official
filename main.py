@@ -95,14 +95,17 @@ def main():
                                        (SCREEN_HEIGHT // 2), BUTTON_WIDTH, BUTTON_HEIGHT), "Maze 2")
         Maze3_button = Button(screen, (((SCREEN_WIDTH // 2) + BUTTON_WIDTH),
                                        (SCREEN_HEIGHT // 2), BUTTON_WIDTH, BUTTON_HEIGHT), "Maze 3")
+        Test_button = Button(screen, (((SCREEN_WIDTH // 2) - BUTTON_WIDTH // 2),
+                                      (SCREEN_HEIGHT // 2) + BUTTON_HEIGHT * 2, BUTTON_WIDTH, BUTTON_HEIGHT), "Test")
         Quit_button = Button(screen, (((SCREEN_WIDTH // 2) - BUTTON_WIDTH // 2),
-                                      (SCREEN_HEIGHT // 2) + BUTTON_HEIGHT * 2, BUTTON_WIDTH, BUTTON_HEIGHT), "Quit")
+                                      (SCREEN_HEIGHT // 2) + BUTTON_HEIGHT * 4, BUTTON_WIDTH, BUTTON_HEIGHT), "Quit")
 
         screen.fill(COLORS['BLUE'])
         render_title(screen)
         Maze1_button.render()
         Maze2_button.render()
         Maze3_button.render()
+        Test_button.render()
         Quit_button.render()
         pygame.display.flip()
 
@@ -124,6 +127,9 @@ def main():
                         choosing_maze = False
                     elif Maze3_button.is_clicked(mouse_pos):
                         MAZE = 'maps/maze3.txt'
+                        choosing_maze = False
+                    elif Test_button.is_clicked(mouse_pos):
+                        MAZE = 'maps/test.txt'
                         choosing_maze = False
                     elif Quit_button.is_clicked(mouse_pos):
                         running = False
