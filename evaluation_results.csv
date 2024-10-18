@@ -1,0 +1,8 @@
+Maze: maps/test10.txt
+Algorithm,Goals Found,Solution Steps,Duration,Memory Size (KB)
+Breadth First Search,{(1, 0), (7, 0), (8, 6)},255,0.00051,1.09375
+Depth First Search,{(1, 0), (7, 0), (8, 6)},361,0.00017,0.90625
+Custom 1,{(1, 0), (7, 0), (8, 6)},255,0.01796,1.35938
+Greedy Best-first Search,{(1, 0), (7, 0), (8, 6)},255,0.00059,1.09375
+A* Search,{(1, 0), (7, 0), (8, 6)},255,0.00034,1.09375
+Custom 2,{(1, 0), (7, 0), (8, 6)},255,0.01776,1.35938
