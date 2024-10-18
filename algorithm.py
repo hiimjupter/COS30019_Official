@@ -78,6 +78,12 @@ class Search:
         found_goals = set()
         paths_to_goals = []
 
+        for goal in self.grid.goal_states:
+            if goal == start:
+                return "Goal is already at the initial state"
+            else:
+                continue
+
         while not queue.empty() and len(found_goals) < len(self.grid.goal_states):
             position, path = queue.get()
 
@@ -107,7 +113,7 @@ class Search:
             self.path = paths_to_goals
             return paths_to_goals
         else:
-            return "No path found."
+            return "No goal is reachable"
 
     def dfs(self):
         self.visited.clear()
@@ -116,6 +122,12 @@ class Search:
         stack = [(start, [])]
         found_goals = set()
         paths_to_goals = []
+
+        for goal in self.grid.goal_states:
+            if goal == start:
+                return "Goal is already at the initial state"
+            else:
+                continue
 
         while stack and len(found_goals) < len(self.grid.goal_states):
             position, path = stack.pop()
@@ -146,7 +158,7 @@ class Search:
             self.path = paths_to_goals
             return paths_to_goals
         else:
-            return "No path found."
+            return "No goal is reachable"
 
     def gbfs(self):
         self.visited.clear()
@@ -157,6 +169,12 @@ class Search:
         queue.put((start, []))
         found_goals = set()
         paths_to_goals = []
+
+        for goal in self.grid.goal_states:
+            if goal == start:
+                return "Goal is already at the initial state"
+            else:
+                continue
 
         while not queue.empty() and len(found_goals) < len(goals):
             position, path = queue.get()
@@ -190,7 +208,7 @@ class Search:
             self.path = paths_to_goals
             return paths_to_goals
         else:
-            return "No path found."
+            return "No goal is reachable"
 
     def a_star(self):
         self.visited.clear()
@@ -203,6 +221,12 @@ class Search:
         f_costs = {start: min(self.heuristic(start, goal) for goal in goals)}
         found_goals = set()
         paths_to_goals = []
+
+        for goal in self.grid.goal_states:
+            if goal == start:
+                return "Goal is already at the initial state"
+            else:
+                continue
 
         while not open_set.empty() and len(found_goals) < len(goals):
             current, path = open_set.get()
@@ -238,7 +262,7 @@ class Search:
             self.path = paths_to_goals
             return paths_to_goals
         else:
-            return "No path found."
+            return "No goal is reachable"
 
     def ids(self):
         self.visited.clear()
@@ -274,6 +298,12 @@ class Search:
         found_goals = set()
         paths_to_goals = []
 
+        for goal in self.grid.goal_states:
+            if goal == start:
+                return "Goal is already at the initial state"
+            else:
+                continue
+
         while len(found_goals) < len(self.grid.goal_states):
             self.visited.clear()
             self.expanded_movement.clear()
@@ -288,7 +318,7 @@ class Search:
             self.path = paths_to_goals
             return paths_to_goals
         else:
-            return "No path found."
+            return "No goal is reachable"
 
     def iterative_deepening_a_star(self):
         self.visited.clear()
@@ -329,6 +359,12 @@ class Search:
         found_goals = set()
         paths_to_goals = []
 
+        for goal in self.grid.goal_states:
+            if goal == start:
+                return "Goal is already at the initial state"
+            else:
+                continue
+
         while len(found_goals) < len(self.grid.goal_states):
             self.visited.clear()
             self.expanded_movement.clear()
@@ -344,7 +380,7 @@ class Search:
             self.path = paths_to_goals
             return paths_to_goals
         else:
-            return "No path found."
+            return "No goal is reachable"
 
     def search(self, algorithm='bfs'):
         if algorithm == 'bfs':

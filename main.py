@@ -31,9 +31,10 @@ def execute_search(search, algorithm):
 
     duration = round(end_time - start_time, 5)
 
-    if isinstance(result, str) and result == "No path found.":
-        path_outputs = result
-        paths = []
+    if isinstance(result, str):
+        if result == "No goal is reachable" or result == "Goal is already at the initial state":
+            path_outputs = result
+            paths = []
     else:
         path_outputs = '; '.join([', '.join(p) for p in result])
         paths = result
@@ -134,7 +135,7 @@ def main():
                         MAZE = 'maps/maze3.txt'
                         choosing_maze = False
                     elif Test_button.is_clicked(mouse_pos):
-                        MAZE = 'maps/test.txt'
+                        MAZE = 'maps/test3.txt'
                         choosing_maze = False
                     elif Quit_button.is_clicked(mouse_pos):
                         running = False
@@ -228,11 +229,11 @@ def main():
                             expanded_nodes_size = sum(
                                 len(node) for node in expanded_nodes) * 8 / 1024
                             results.append(
-                                [get_algorithm_name(algo), goals_found, len(path_outputs) if path_outputs != 'No path found.' else 0, duration, round(expanded_nodes_size, 5)])
-                        with open('evaluation_results.csv', 'w') as f:
+                                [get_algorithm_name(algo), goals_found, path_outputs if path_outputs == "No goal is reachable" or path_outputs == "Goal is already at the initial state" else len(path_outputs), duration, round(expanded_nodes_size, 5)])
+                        with open(f'evaluation_results.csv', 'w') as f:
                             f.write(f'Maze: {MAZE}\n')
                             f.write(
-                                'Algorithm,Goals Found,Solution Steps,Duration,Expanded Nodes Size (MB)\n')
+                                'Algorithm,Goals Found,Solution Steps,Duration,Memory Size (KB)\n')
                             for result in results:
                                 f.write(','.join(map(str, result)) + '\n')
                         print('Evaluation results saved to evaluation_results.csv')
@@ -244,7 +245,7 @@ def main():
         if algorithm:
             paths, path_outputs, duration, expanded_nodes = execute_search(
                 search, algorithm)
-            if path_outputs == "No path found.":
+            if path_outputs == "No goal is reachable" or path_outputs == "Goal is already at the initial state":
                 print('--------Results---------')
                 print(f'Maze: {MAZE}')
                 print(f'Algorithm: {algorithm}')
