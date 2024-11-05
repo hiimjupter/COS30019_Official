@@ -1,0 +1,5 @@
+TELL
+p1 => p2; d5 => d3; g1 => d5; d3; g3; d5
+
+ASK
+p2
