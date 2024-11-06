@@ -43,9 +43,21 @@ def run_algorithm(filename, algo):
         else:
             print('NO')
     elif algo == 'FC':
-        print('Forward Chaining is not implemented yet.')
+        kb_str = '; '.join(tell_statements)  
+        fc = ForwardChaining(kb_str, query_statement)
+        result = fc.entails()
+        if result.startswith("YES"):  # Check if the result return "YES"
+            print(result) 
+        else:
+            print("NO") 
     elif algo == 'BC':
-        print('Backward Chaining is not implemented yet.')
+        kb_str = '; '.join(tell_statements)
+        bc = BackwardChaining(tell_statements)
+        result = bc.backward_chain(query_statement)
+        if result:
+            print("YES:", ', '.join(bc.entailed_symbols))  # Print YES and the list of entailed propositions
+        else: 
+            print("NO")
     else:
         print(f'Unknown algorithm: {algo}')
 
