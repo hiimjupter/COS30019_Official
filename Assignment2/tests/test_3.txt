@@ -1,5 +1,5 @@
 TELL
-p => q;q => r;r => s;s => p;
+p => q ; q => r ; r => s ; s => p ;
 
 ASK
 t
