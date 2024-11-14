@@ -37,26 +37,24 @@ def run_algorithm(filename, algo):
 
     if algo == 'TT':
         tt = TruthTable(tell_statements, query_statement)
-        result = tt.entails()
-        if result:
-            print('YES:', tt.entail_count)
-        else:
-            print('NO')
+        result = tt.checking()
+        print(result)
     elif algo == 'FC':
-        kb_str = '; '.join(tell_statements)  
+        kb_str = '; '.join(tell_statements)
         fc = ForwardChaining(kb_str, query_statement)
         result = fc.entails()
         if result.startswith("YES"):  # Check if the result return "YES"
-            print(result) 
+            print(result)
         else:
-            print("NO") 
+            print("NO")
     elif algo == 'BC':
         kb_str = '; '.join(tell_statements)
         bc = BackwardChaining(tell_statements)
         result = bc.backward_chain(query_statement)
         if result:
-            print("YES:", ', '.join(bc.entailed_symbols))  # Print YES and the list of entailed propositions
-        else: 
+            # Print YES and the list of entailed propositions
+            print("YES:", ', '.join(bc.entailed_symbols))
+        else:
             print("NO")
     else:
         print(f'Unknown algorithm: {algo}')
