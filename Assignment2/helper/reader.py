@@ -16,7 +16,7 @@ class Reader():
           - query_statement (str): The statement immediately following the 'ask' keyword.
         """
 
-        allowed_pattern = re.compile(r'^[a-z0-9~&|=<>\s;]+$')
+        allowed_pattern = re.compile(r'^[a-z0-9~&|=<>\s();]+$')
 
         with open(self.filename) as file:
             lines = [line.strip().lower().split(";") for line in file]

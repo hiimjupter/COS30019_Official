@@ -1,11 +1,10 @@
 from collections import defaultdict, deque
-import re
 
 class ForwardChaining:
     def __init__(self, kb, query):
         self.kb = self.parse_kb(kb)  # Convert KB from string format to data structure
         self.query = query  # Query to be inferred
-        self.count = defaultdict(int)  # Number of premises needed to infer the result for each Horn clause
+        self.count = defaultdict(int)  # Number of premises needed to infer each Horn clause result
         self.inferred = defaultdict(bool)  # Inference status of each symbol
         self.agenda = deque()  # List of known true facts
 
@@ -44,13 +43,18 @@ class ForwardChaining:
             if not self.inferred[p]:   # If this symbol has not been inferred yet
                 self.inferred[p] = True  # Mark it as inferred
                 entailed_symbols.append(p)  # Add it to the list of inferred symbols
-                # Check each Horn clause that contains p in its premises
+
+                # Process each clause that has p in its premises
                 for premises, head in self.kb:
                     if p in premises:
                         self.count[head] -= 1
-                        if self.count[head] == 0:  # If all premises are true
-                            if head == self.query:
-                                entailed_list = ', '.join(entailed_symbols)
-                                return f"YES: {entailed_list}"
+                        # If all premises are satisfied, infer the head
+                        if self.count[head] == 0 and not self.inferred[head]:
                             self.agenda.append(head)
-        return "NO"
+
+        # After processing the entire agenda, check if the query was entailed
+        if self.inferred[self.query]:
+            entailed_list = ', '.join(entailed_symbols)
+            return f"YES: {entailed_list}"
+        else:
+            return "NO"
