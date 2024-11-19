@@ -1,4 +1,5 @@
 import re
+from helper.convertCNF import *
 
 def parse_to_clauses(cnf_expression):
     """
@@ -35,13 +36,11 @@ def pl_resolution(kb, alpha):
             for j in range(i + 1, len(clause_list)):
                 resolvents = pl_resolve(clause_list[i], clause_list[j])
                 if () in resolvents:  # Check if the empty clause is generated
-                    print("Contradiction found.")
                     return True
                 new.update(resolvents)
 
         # If no new clauses are generated, stop and return False
         if new.issubset(clauses):
-            print("No contradiction found.")
             return False
 
         # Add the new clauses to the knowledge base
@@ -78,7 +77,31 @@ def run_resolution(kb, query):
     :param query: String representing the query in CNF
     :return: True if the query can be proven, False otherwise
     """
+    # Step 1: Parse the knowledge base (kb) into clauses
     kb_clauses = parse_to_clauses(kb)
+
+    # Step 2: Parse the query into clauses
     query_clauses = parse_to_clauses(query)
-    negated_query = [tuple(sorted(["~" + literal if not literal.startswith("~") else literal[1:] for literal in clause])) for clause in query_clauses]
-    return pl_resolution(kb_clauses, negated_query)
+
+    # Step 3: Negate the query
+    negated_query = [
+        tuple(sorted(["~" + literal if not literal.startswith("~") else literal[1:] for literal in clause]))
+        for clause in query_clauses
+    ]
+
+    # Step 4: Convert the negated query to a string representation
+    negated_query_str = " , ".join([" & ".join(clause) for clause in negated_query])
+
+
+    # Step 5: Parse the negated query string into tokens
+    negated_query_tokens = parse_expression(negated_query_str)
+
+    # Step 6: Convert the negated query tokens into CNF
+    negated_CNF_tokens = convert_to_cnf(negated_query_tokens)
+
+
+    # Step 7: Parse the resulting CNF string into clauses
+    negated_CNF_clauses = parse_to_clauses(negated_CNF_tokens)
+
+    # Step 8: Perform PL-Resolution
+    return pl_resolution(kb_clauses, negated_CNF_clauses)

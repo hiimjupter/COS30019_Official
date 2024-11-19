@@ -46,21 +46,27 @@ def run_algorithm(filename, algo):
         else:
             print('NO')
     elif algo == 'FC':
-        kb_str = '; '.join(tell_statements)  
-        fc = ForwardChaining(kb_str, query_statement)
-        result = fc.entails()
-        if result.startswith("YES"):  # Check if the result return "YES"
-            print(result) 
-        else:
-            print("NO") 
+        kb_str = '; '.join(tell_statements) 
+        try: 
+            fc = ForwardChaining(kb_str, query_statement)
+            result = fc.entails()
+            if result.startswith("YES"):  # Check if the result return "YES"
+                print(result) 
+            else:
+                print("NO")
+        except ValueError as e:
+            print(e) 
     elif algo == 'BC':
         kb_str = '; '.join(tell_statements)
-        bc = BackwardChaining(tell_statements)
-        result = bc.backward_chain(query_statement)
-        if result:
-            print("YES:", ', '.join(bc.entailed_symbols))  # Print YES and the list of entailed propositions
-        else: 
-            print("NO")
+        try: 
+            bc = BackwardChaining(tell_statements)
+            result = bc.backward_chain(query_statement)
+            if result:
+                print("YES:", ', '.join(bc.entailed_symbols))  # Print YES and the list of entailed propositions
+            else: 
+                print("NO")
+        except ValueError as e:
+            print(e) 
     elif algo == 'RS':
         # Convert tell_statements and query_statement to CNF
         tell_statements_str = '; '.join(tell_statements)  # Concatenate knowledge base
@@ -69,6 +75,11 @@ def run_algorithm(filename, algo):
         print(f"Converted CNF: {cnf_result}")
         # Run the resolution algorithm
         result = run_resolution(cnf_result,query_statement)
+        if result == True:
+            print("The query is entailed by the knowledge base (Contradiction Found!).")
+        else:
+            print("(No Contradiction Found!)")
+            
     else:
         print(f'Unknown algorithm: {algo}')
 
