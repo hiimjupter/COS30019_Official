@@ -2,4 +2,4 @@ TELL
 a <=> b ; b => c ; c & d => e ; e => f ; g <=> h ; h => d ; a ;
 
 ASK
-f
+a
