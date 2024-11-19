@@ -5,6 +5,9 @@ from helper.reader import *
 from helper.truth_table import *
 from helper.backward_chaining import *
 from helper.forward_chaining import *
+from helper.convertCNF import *
+from helper.resolution import *
+
 
 
 def main():
@@ -56,6 +59,14 @@ def run_algorithm(filename, algo):
             print("YES:", ', '.join(bc.entailed_symbols))
         else:
             print("NO")
+    elif algo == 'RS':
+        # Convert tell_statements and query_statement to CNF
+        tell_statements_str = '; '.join(tell_statements)  # Concatenate knowledge base
+        print(f"Original Tell Statements: {tell_statements_str}")
+        cnf_result = convert_to_cnf(parse_expression(tell_statements_str))
+        print(f"Converted CNF: {cnf_result}")
+        # Run the resolution algorithm
+        result = run_resolution(cnf_result,query_statement)
     else:
         print(f'Unknown algorithm: {algo}')
 
