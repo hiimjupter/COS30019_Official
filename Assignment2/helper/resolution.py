@@ -1,5 +1,6 @@
 import re
 
+
 def parse_to_clauses(cnf_expression):
     """
     Parse a CNF string into a list of clauses, ensuring negations (~) are preserved.
@@ -17,6 +18,7 @@ def parse_to_clauses(cnf_expression):
             clauses.append(tuple(sorted(literals)))
     return clauses
 
+
 def pl_resolution(kb, alpha):
     """
     Perform the PL-RESOLUTION algorithm.
@@ -25,7 +27,8 @@ def pl_resolution(kb, alpha):
     :return: True if a contradiction is found, False otherwise
     """
     # Combine the knowledge base (KB) and the negation of the query (not alpha)
-    clauses = set([tuple(sorted(clause)) for clause in kb] + [tuple(sorted(clause)) for clause in alpha])
+    clauses = set([tuple(sorted(clause)) for clause in kb] +
+                  [tuple(sorted(clause)) for clause in alpha])
     new = set()
 
     while True:
@@ -46,6 +49,7 @@ def pl_resolution(kb, alpha):
 
         # Add the new clauses to the knowledge base
         clauses.update(new)
+
 
 def pl_resolve(ci, cj):
     """
@@ -71,6 +75,7 @@ def pl_resolve(ci, cj):
 
     return resolvents
 
+
 def run_resolution(kb, query):
     """
     Main function to execute PL-Resolution from CNF input.
@@ -80,5 +85,6 @@ def run_resolution(kb, query):
     """
     kb_clauses = parse_to_clauses(kb)
     query_clauses = parse_to_clauses(query)
-    negated_query = [tuple(sorted(["~" + literal if not literal.startswith("~") else literal[1:] for literal in clause])) for clause in query_clauses]
+    negated_query = [tuple(sorted(["~" + literal if not literal.startswith(
+        "~") else literal[1:] for literal in clause])) for clause in query_clauses]
     return pl_resolution(kb_clauses, negated_query)

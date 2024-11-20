@@ -31,7 +31,7 @@ class TruthTable():
 
     def tokenizer(self, sentence):
         # Tokenize the sentence into symbols and logical operators using regex
-        return re.findall(r'[a-zA-Z0-9]+|<=>|=>|&|\||~|\(|\)', sentence)
+        return re.findall(r'[a-zA-Z0-9]+|<=>|=>|&|\|||~|\(|\)', sentence)
 
     def evaluate(self, sentence, model):
         # Evaluate the truth value of the sentence under the given model
@@ -43,7 +43,7 @@ class TruthTable():
         operators = []  # Operator stack
 
         for token in tokens:
-            if token in ('=>', '&', '|'):
+            if token in ('=>', '&', '||'):
                 # Push operators onto the operator stack
                 operators.append(token)
             elif token == '~':
@@ -75,7 +75,7 @@ class TruthTable():
                         right = stack.pop()
                         left = stack.pop()
                         stack.append(left and right)
-                    elif operator == '|':
+                    elif operator == '||':
                         # Handle logical OR: (A | B)
                         if len(stack) < 2:
                             raise ValueError(

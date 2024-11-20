@@ -1,0 +1,5 @@
+TELL
+p||q||r ; ~p||s ; ~q||t ; ~r||u ; ~s||~t||~u; v||w ; ~v||s ; ~w||t ; ~(s&t&u)||x ; ~x ;
+
+ASK
+x
