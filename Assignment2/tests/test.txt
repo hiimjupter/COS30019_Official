@@ -1,4 +1,0 @@
-TELL
-p => q; r || ~ q; ~r;
-ASK
-~p 

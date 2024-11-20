@@ -67,7 +67,6 @@ def pl_resolve(ci, cj):
             new_clause.discard(literal)
             new_clause.discard(complementary_literal)
             resolvents.add(tuple(sorted(new_clause)))
-
     return resolvents
 
 def run_resolution(kb, query):
