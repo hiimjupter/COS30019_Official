@@ -1,5 +1,0 @@
-TELL
-a => b ; b => c ; c => d ; a ;
-
-ASK
-d

@@ -42,56 +42,48 @@ class TruthTable():
         stack = []      # Operand stack
         operators = []  # Operator stack
 
-        for token in tokens:
-            if token in ('<=>', '=>', '&', '||'):
-                # Push operators onto the operator stack
-                operators.append(token)
-            elif token == '~':
-                # Handle NOT operator
-                operators.append(token)
+        precedence = {'~': 3, '&': 2, '||': 1, '=>': 0, '<=>': 0}
+        associativity = {'~': 'right', '&': 'left',
+                         '||': 'left', '=>': 'right', '<=>': 'right'}
+
+        def apply_operator():
+            operator = operators.pop()
+            if operator == '~':
+                operand = stack.pop()
+                stack.append(not operand)
             else:
-                # Token is a symbol, push its value from the model onto the stack
+                right = stack.pop()
+                left = stack.pop()
+                if operator == '&':
+                    stack.append(left and right)
+                elif operator == '||':
+                    stack.append(left or right)
+                elif operator == '=>':
+                    stack.append(not left or right)
+                elif operator == '<=>':
+                    stack.append(left == right)
+
+        for token in tokens:
+            if token in precedence:
+                while (operators and operators[-1] in precedence and
+                       ((associativity[token] == 'left' and precedence[token] <= precedence[operators[-1]]) or
+                        (associativity[token] == 'right' and precedence[token] < precedence[operators[-1]]))):
+                    apply_operator()
+                operators.append(token)
+            elif token == '(':
+                operators.append(token)
+            elif token == ')':
+                while operators and operators[-1] != '(':
+                    apply_operator()
+                operators.pop()  # Remove '('
+            else:
                 stack.append(model.get(token, False))
-                while operators and operators[-1] == '~':
-                    operators.pop()
-                    operand = stack.pop()
-                    stack.append(not operand)
-                if operators and operators[-1] in ('<=>', '=>', '&', '||'):
-                    operator = operators.pop()
-                    if operator == '=>':
-                        # Handle implication: (A => B)
-                        if len(stack) < 2:
-                            raise ValueError("Invalid IMPLICATION operation.")
-                        right = stack.pop()
-                        left = stack.pop()
-                        # A => B is equivalent to (not A) or B
-                        stack.append(not left or right)
-                    elif operator == '<=>':
-                        # Handle biconditional: (A <=> B)
-                        if len(stack) < 2:
-                            raise ValueError(
-                                "Invalid IFF operation.")
-                        right = stack.pop()
-                        left = stack.pop()
-                        # A <=> B is equivalent to ((not A) or B) and ((not B) or A)
-                        stack.append((not left or right)
-                                     and (not right or left))
-                    elif operator == '&':
-                        # Handle logical AND: (A & B)
-                        if len(stack) < 2:
-                            raise ValueError("Invalid AND operation.")
-                        right = stack.pop()
-                        left = stack.pop()
-                        stack.append(left and right)
-                    elif operator == '||':
-                        # Handle logical OR: (A || B)
-                        if len(stack) < 2:
-                            raise ValueError("Invalid OR operation.")
-                        right = stack.pop()
-                        left = stack.pop()
-                        stack.append(left or right)
+
+        while operators:
+            apply_operator()
+
         if len(stack) != 1:
-            raise ValueError("Invalid clause evaluation: not in horn form.")
+            raise ValueError("Invalid clause evaluation.")
         # Return the final truth value
         return stack.pop()
 
@@ -114,7 +106,7 @@ class TruthTable():
             return "NO"
 
         # Check if the query is true in all satisfying models
-        entailments = all(model[self.query]
+        entailments = all(self.evaluate(self.query, model)
                           for model in self.satisfying_models)
 
         if entailments:

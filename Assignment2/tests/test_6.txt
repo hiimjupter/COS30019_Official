@@ -1,5 +1,5 @@
 TELL
-p1 => p2 ; d5 => d3 ; g1 => d5 ; d3 ; g3 ; d5 ;
+b & c => d ; d & e => f ; f & g => h ; f & g => g ; i => j ; j => c ; c => e ; k => g ; b ; i ; k ;
 
 ASK
-p2
+h
