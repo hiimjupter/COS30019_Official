@@ -1,7 +1,6 @@
 import re
 from helper.convertCNF import *
 
-
 def parse_to_clauses(cnf_expression):
     """
     Parse a CNF string into a list of clauses, ensuring negations (~) are preserved.

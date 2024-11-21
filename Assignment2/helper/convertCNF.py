@@ -9,6 +9,7 @@ def parse_expression(expr):
     tokens = re.findall(r'[a-zA-Z]+|~|&|\|\||=>|<=>|\(|\)|,|;', expr)
     return tokens
 
+
 # Function to convert equivalence operators ('<=>') to implications
 def convert_equivalence(expression):
     def handle_equivalence(expr):
@@ -251,19 +252,19 @@ def convert_to_cnf(expression):
 
     # Step 1: Convert equivalence operators
     equivalence_tokens = convert_equivalence(expression)
-    print("After Equivalence: ", " ".join(equivalence_tokens))
+    # print("After Equivalence: ", " ".join(equivalence_tokens))
 
     # Step 2: Eliminate implications
     implication_tokens = eliminate_implication(equivalence_tokens)
-    print("After Implication: ", " ".join(implication_tokens))
+    # print("After Implication: ", " ".join(implication_tokens))
 
     # Step 3: Apply negation rules (De Morgan's law)
     convert_negation_tokens = convert_negation(implication_tokens)
-    print("After Negation: ", " ".join(convert_negation_tokens))
+    # print("After Negation: ", " ".join(convert_negation_tokens))
 
     # Step 4: Simplify double negations
     double_negation_tokens = simplify_double_negation(convert_negation_tokens)
-    print("After Double Negation: ", " ".join(double_negation_tokens))
+    # print("After Double Negation: ", " ".join(double_negation_tokens))
 
     # Convert list of tokens to a single string representation
     result = " ".join(double_negation_tokens)

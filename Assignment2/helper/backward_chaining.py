@@ -9,7 +9,13 @@ class BackwardChaining:
 
         # Parse tell_statements and store rules in the dictionary
         for statement in tell_statements:
-            if '=>' in statement:
+            if '<=>' in statement:
+                # Raise error for unsupported biconditional
+                raise ValueError(f"Invalid clause: '{statement}' contains '<=>' which is not allowed in Horn clauses.")
+            elif '~' in statement or '||' in statement:
+                # Disallow negation and disjunction
+                raise ValueError(f"Invalid clause: '{statement}' contains unsupported operators (negation or disjunction).")
+            elif '=>' in statement:
                 premises, conclusion = statement.split('=>')
                 premises = [p.strip() for p in premises.split('&')]
                 conclusion = conclusion.strip()

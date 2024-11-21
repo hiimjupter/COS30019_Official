@@ -80,7 +80,6 @@ def run_algorithm(filename, algo):
             print("The query is entailed by the knowledge base (Contradiction Found!).")
         else:
             print("(No Contradiction Found!)")
-
     else:
         print(f'Unknown algorithm: {algo}')
 

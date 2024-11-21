@@ -18,24 +18,42 @@ class ForwardChaining:
                 self.inferred[symbol] = False  # Mark all symbols as initially uninferred
 
     def parse_kb(self, kb_str):
-        # Method to convert KB string into a list of (premises, head) pairs
+        """
+        Converts the knowledge base (KB) string into a list of (premises, head) pairs.
+        Ensures the KB follows Horn clause rules.
+        """
         kb = []
         clauses = kb_str.split(';')
         for clause in clauses:
             clause = clause.strip()
-            if '=>' in clause:
+            if '<=>' in clause:
+                # Raise error for unsupported biconditional
+                raise ValueError(f"Invalid clause: '{clause}' contains '<=>' which is not allowed in Horn clauses.")
+            elif '=>' in clause:
+                # Properly split on '=>'
                 premises, head = clause.split('=>')
                 premises = [p.strip() for p in premises.split('&')]
                 head = head.strip()
+            elif '~' in clause or '||' in clause:
+                # Disallow negation and disjunction
+                raise ValueError(f"Invalid clause: '{clause}' contains unsupported operators (negation or disjunction).")
             else:
                 # If there are no premises, this is an initial fact
                 premises = []
-                head = clause
+                head = clause.strip()
+
+            # Validate that the clause is a Horn clause
+            if len(premises) > 1 and not head:
+                raise ValueError(f"Invalid clause: '{clause}' is not a Horn clause. Horn clauses must have at most one head.")
             kb.append((premises, head))
         return kb
 
     def entails(self):
-        # Perform Forward Chaining to check entailment
+        """
+        Perform Forward Chaining to check entailment.
+        Returns:
+            str: "YES: <entailed_symbols>" if the query can be inferred, otherwise "NO".
+        """
         entailed_symbols = []  # Store symbols that have been inferred
 
         while self.agenda:
