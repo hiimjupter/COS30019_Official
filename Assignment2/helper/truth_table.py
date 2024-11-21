@@ -9,7 +9,6 @@ class TruthTable():
         self.query = query  # Query: a single symbol or sentence to prove
         # Extract and sort all unique symbols from KB and query
         self.symbols = sorted(self.get_symbols())
-        self.satisfying_models = []  # Stores models that satisfy the KB
         self.model_count = 0  # Counter for satisfying models
 
     def extract_symbols(self, sentence):
@@ -99,19 +98,15 @@ class TruthTable():
             if all(self.evaluate(sentence, model) for sentence in self.kb):
                 # If it does, add to satisfying models
                 self.model_count += 1
-                self.satisfying_models.append(model)
+                # Evaluate the query in the model
+                query_result = self.evaluate(self.query, model)
+                # Early termination: the query is false in a satisfying model
+                if not query_result:
+                    return "NO"
 
-        if not self.satisfying_models:
+        if self.model_count == 0:
             # No satisfying models found
             return "NO"
 
-        # Check if the query is true in all satisfying models
-        entailments = all(self.evaluate(self.query, model)
-                          for model in self.satisfying_models)
-
-        if entailments:
-            # Query is entailed by the KB
-            return f"YES: {self.model_count}"
-        else:
-            # Query is not entailed
-            return "NO"
+        # All satisfying models also satisfy the query
+        return f"YES: {self.model_count}"
