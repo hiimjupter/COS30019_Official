@@ -18,6 +18,7 @@ def parse_to_clauses(cnf_expression):
             clauses.append(tuple(sorted(literals)))
     return clauses
 
+
 def pl_resolution(kb, alpha):
     """
     Perform the PL-RESOLUTION algorithm.
@@ -26,7 +27,8 @@ def pl_resolution(kb, alpha):
     :return: True if a contradiction is found, False otherwise
     """
     # Combine the knowledge base (KB) and the negation of the query (not alpha)
-    clauses = set([tuple(sorted(clause)) for clause in kb] + [tuple(sorted(clause)) for clause in alpha])
+    clauses = set([tuple(sorted(clause)) for clause in kb] +
+                  [tuple(sorted(clause)) for clause in alpha])
     new = set()
 
     while True:
@@ -45,6 +47,7 @@ def pl_resolution(kb, alpha):
 
         # Add the new clauses to the knowledge base
         clauses.update(new)
+
 
 def pl_resolve(ci, cj):
     """
@@ -69,6 +72,7 @@ def pl_resolve(ci, cj):
             resolvents.add(tuple(sorted(new_clause)))
     return resolvents
 
+
 def run_resolution(kb, query):
     """
     Main function to execute PL-Resolution from CNF input.
@@ -84,20 +88,20 @@ def run_resolution(kb, query):
 
     # Step 3: Negate the query
     negated_query = [
-        tuple(sorted(["~" + literal if not literal.startswith("~") else literal[1:] for literal in clause]))
+        tuple(sorted(["~" + literal if not literal.startswith("~")
+              else literal[1:] for literal in clause]))
         for clause in query_clauses
     ]
 
     # Step 4: Convert the negated query to a string representation
-    negated_query_str = " , ".join([" & ".join(clause) for clause in negated_query])
-
+    negated_query_str = " , ".join(
+        [" & ".join(clause) for clause in negated_query])
 
     # Step 5: Parse the negated query string into tokens
     negated_query_tokens = parse_expression(negated_query_str)
 
     # Step 6: Convert the negated query tokens into CNF
     negated_CNF_tokens = convert_to_cnf(negated_query_tokens)
-
 
     # Step 7: Parse the resulting CNF string into clauses
     negated_CNF_clauses = parse_to_clauses(negated_CNF_tokens)

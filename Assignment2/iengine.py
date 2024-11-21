@@ -9,7 +9,6 @@ from helper.convertCNF import *
 from helper.resolution import *
 
 
-
 def main():
     if len(sys.argv) == 2 and sys.argv[1] == 'test_all':
         # Run all methods on all test files in the 'tests' directory
@@ -46,40 +45,41 @@ def run_algorithm(filename, algo):
         else:
             print('NO')
     elif algo == 'FC':
-        kb_str = '; '.join(tell_statements) 
-        try: 
+        kb_str = '; '.join(tell_statements)
+        try:
             fc = ForwardChaining(kb_str, query_statement)
             result = fc.entails()
             if result.startswith("YES"):  # Check if the result return "YES"
-                print(result) 
+                print(result)
             else:
                 print("NO")
         except ValueError as e:
-            print(e) 
+            print(e)
     elif algo == 'BC':
         kb_str = '; '.join(tell_statements)
-        try: 
+        try:
             bc = BackwardChaining(tell_statements)
             result = bc.backward_chain(query_statement)
             if result:
-                print("YES:", ', '.join(bc.entailed_symbols))  # Print YES and the list of entailed propositions
-            else: 
+                # Print YES and the list of entailed propositions
+                print("YES:", ', '.join(bc.entailed_symbols))
+            else:
                 print("NO")
         except ValueError as e:
-            print(e) 
+            print(e)
     elif algo == 'RS':
         # Convert tell_statements and query_statement to CNF
-        tell_statements_str = '; '.join(tell_statements)  # Concatenate knowledge base
+        tell_statements_str = '; '.join(
+            tell_statements)  # Concatenate knowledge base
         print(f"Original Tell Statements: {tell_statements_str}")
         cnf_result = convert_to_cnf(parse_expression(tell_statements_str))
         print(f"Converted CNF: {cnf_result}")
         # Run the resolution algorithm
-        result = run_resolution(cnf_result,query_statement)
+        result = run_resolution(cnf_result, query_statement)
         if result == True:
             print("The query is entailed by the knowledge base (Contradiction Found!).")
         else:
             print("(No Contradiction Found!)")
-            
     else:
         print(f'Unknown algorithm: {algo}')
 
