@@ -1,15 +1,15 @@
 import re
-from itertools import product
 
 
-class TruthTable():
+class TruthTable:
     def __init__(self, kb, query):
         # Initialize the knowledge base and query
         self.kb = kb  # Knowledge base: list of logical sentences
         self.query = query  # Query: a single symbol or sentence to prove
         # Extract and sort all unique symbols from KB and query
         self.symbols = sorted(self.get_symbols())
-        self.model_count = 0  # Counter for satisfying models
+        # Counter for satisfying models where KB and query are true
+        self.satisfying_model_count = 0
 
     def extract_symbols(self, sentence):
         # Helper method to extract unique symbols from a sentence
@@ -86,27 +86,49 @@ class TruthTable():
         # Return the final truth value
         return stack.pop()
 
+    def tt_check_all(self, symbols, model):
+        # Recursive function to evaluate all models
+        if not symbols:
+            # When all symbols are assigned, check KB and query
+            kb_is_true = all(self.evaluate(sentence, model)
+                             for sentence in self.kb)
+            if not kb_is_true:
+                # If KB is false, return True (vacuous entailment)
+                return True
+            query_is_true = self.evaluate(self.query, model)
+            if query_is_true:
+                # Count the model where both KB and query are true
+                self.satisfying_model_count += 1
+            return query_is_true
+
+        # Assign truth values dynamically
+        first_symbol = symbols[0]
+        rest_symbols = symbols[1:]
+
+        # Assign `True` to the first symbol and check recursively
+        model[first_symbol] = True
+        if not self.tt_check_all(rest_symbols, model):
+            return False  # Early termination if query is false
+
+        # Assign `False` to the first symbol and check recursively
+        model[first_symbol] = False
+        if not self.tt_check_all(rest_symbols, model):
+            return False  # Early termination if query is false
+
+        return True  # If all branches succeed, return True
+
     def checking(self):
-        # Generate all possible models (combinations of truth values)
-        models = product([False, True], repeat=len(self.symbols))
+        # Initialize an empty model and start recursive evaluation
+        model = {}
+        result = self.tt_check_all(self.symbols, model)
 
-        for model_iter in models:
-            # Create a model mapping symbols to truth values
-            model = dict(zip(self.symbols, model_iter))
-
-            # Check if the model satisfies all sentences in the KB
-            if all(self.evaluate(sentence, model) for sentence in self.kb):
-                # If it does, add to satisfying models
-                self.model_count += 1
-                # Evaluate the query in the model
-                query_result = self.evaluate(self.query, model)
-                # Early termination: the query is false in a satisfying model
-                if not query_result:
-                    return "NO"
-
-        if self.model_count == 0:
-            # No satisfying models found
+        if self.satisfying_model_count == 0:
+            # If no models satisfy the KB, the KB is inconsistent
             return "NO"
 
-        # All satisfying models also satisfy the query
-        return f"YES: {self.model_count}"
+        if result:
+            # If the query is true in all satisfying models, return YES with the count
+            return f"YES: {self.satisfying_model_count}"
+        else:
+            # If the query is false in any satisfying model, return NO
+            return "NO"
