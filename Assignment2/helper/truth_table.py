@@ -31,7 +31,7 @@ class TruthTable():
 
     def tokenizer(self, sentence):
         # Tokenize the sentence into symbols and logical operators using regex
-        return re.findall(r'[a-zA-Z0-9]+|<=>|=>|&|\|||~|\(|\)', sentence)
+        return re.findall(r'[a-zA-Z0-9]+|<=>|=>|&|\|\||~|\(|\)', sentence)
 
     def evaluate(self, sentence, model):
         # Evaluate the truth value of the sentence under the given model
@@ -43,43 +43,50 @@ class TruthTable():
         operators = []  # Operator stack
 
         for token in tokens:
-            if token in ('=>', '&', '||'):
+            if token in ('<=>', '=>', '&', '||'):
                 # Push operators onto the operator stack
                 operators.append(token)
             elif token == '~':
                 # Handle NOT operator
-                if not stack:
-                    raise ValueError("Invalid NOT operation: no operand.")
-                operand = stack.pop()
-                # Apply NOT to the operand and push result back to stack
-                stack.append(not operand)
+                operators.append(token)
             else:
                 # Token is a symbol, push its value from the model onto the stack
                 stack.append(model.get(token, False))
-                if operators:
+                while operators and operators[-1] == '~':
+                    operators.pop()
+                    operand = stack.pop()
+                    stack.append(not operand)
+                if operators and operators[-1] in ('<=>', '=>', '&', '||'):
                     operator = operators.pop()
                     if operator == '=>':
                         # Handle implication: (A => B)
                         if len(stack) < 2:
-                            raise ValueError(
-                                "Invalid implication operation: insufficient operands.")
+                            raise ValueError("Invalid IMPLICATION operation.")
                         right = stack.pop()
                         left = stack.pop()
                         # A => B is equivalent to (not A) or B
                         stack.append(not left or right)
+                    elif operator == '<=>':
+                        # Handle biconditional: (A <=> B)
+                        if len(stack) < 2:
+                            raise ValueError(
+                                "Invalid IFF operation.")
+                        right = stack.pop()
+                        left = stack.pop()
+                        # A <=> B is equivalent to ((not A) or B) and ((not B) or A)
+                        stack.append((not left or right)
+                                     and (not right or left))
                     elif operator == '&':
                         # Handle logical AND: (A & B)
                         if len(stack) < 2:
-                            raise ValueError(
-                                "Invalid AND operation: insufficient operands.")
+                            raise ValueError("Invalid AND operation.")
                         right = stack.pop()
                         left = stack.pop()
                         stack.append(left and right)
                     elif operator == '||':
-                        # Handle logical OR: (A | B)
+                        # Handle logical OR: (A || B)
                         if len(stack) < 2:
-                            raise ValueError(
-                                "Invalid OR operation: insufficient operands.")
+                            raise ValueError("Invalid OR operation.")
                         right = stack.pop()
                         left = stack.pop()
                         stack.append(left or right)
@@ -109,9 +116,6 @@ class TruthTable():
         # Check if the query is true in all satisfying models
         entailments = all(model[self.query]
                           for model in self.satisfying_models)
-
-        for model in self.satisfying_models:
-            print('Satisfying model:', model)
 
         if entailments:
             # Query is entailed by the KB

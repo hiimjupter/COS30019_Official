@@ -39,11 +39,8 @@ def run_algorithm(filename, algo):
 
     if algo == 'TT':
         tt = TruthTable(tell_statements, query_statement)
-        result = tt.entails()
-        if result:
-            print('YES:', tt.entail_count)
-        else:
-            print('NO')
+        result = tt.checking()
+        print(result)
     elif algo == 'FC':
         kb_str = '; '.join(tell_statements)
         try:
