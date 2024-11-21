@@ -1,0 +1,4 @@
+TELL
+(a => b) ;(b => c) ;(c => d) ;(d => (e v f));(~e => g);(~f => h); (~g v ~h);
+ASK
+g
